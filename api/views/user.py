@@ -7,11 +7,12 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema_view
 from rest_framework.exceptions import AuthenticationFailed
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from ..models import CustomUser
 
 from documentation import (
     login_user_list_doc,
-    logout_user_list_doc,
     user_list_doc,
     user_retrieve_doc,
     user_create_doc,
@@ -68,8 +69,7 @@ class ManagerViewSet(viewsets.ViewSet):
 
 
 @extend_schema_view(
-    login=login_user_list_doc,
-    logout=logout_user_list_doc,
+    login=login_user_list_doc
 )
 class AuthViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
@@ -79,18 +79,18 @@ class AuthViewSet(viewsets.ViewSet):
         serializer = LoginCustomUserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        username = serializer.validated_data["username"]
-        password = serializer.validated_data["password"]
+        user = authenticate(
+            username=serializer.validated_data["username"],
+            password=serializer.validated_data["password"],
+        )
 
-        user = authenticate(username=username, password=password)
         if user is None:
-            raise AuthenticationFailed(detail="Invalid credentials.", code="invalid_credentials")
+            raise AuthenticationFailed("Invalid credentials.")
 
-        django_logout(request)
-        django_login(request, user)
-        return Response({"detail": "Login successful"})
+        refresh = RefreshToken.for_user(user)
 
-    @action(detail=False, methods=["post"], permission_classes=[permissions.IsAuthenticated])
-    def logout(self, request):
-        django_logout(request)
-        return Response({"detail": "Logout successful"})
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        })
+

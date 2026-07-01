@@ -5,7 +5,11 @@ from django.shortcuts import redirect
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from .views.user import CustomUserViewSet
+from .views.user import CustomUserViewSet, ManagerViewSet
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 # router = DefaultRouter()
 # router.register(r'', ManagerViewSet, basename='manager')
@@ -18,8 +22,10 @@ urlpatterns = [
         'put': 'update',
         'patch': 'partial_update'
     })),
-    # path('accounts/login/', AuthViewSet.as_view({'post': 'login'}), name='login'),
-    # path('accounts/logout/', AuthViewSet.as_view({'post': 'logout'}), name='logout'),
+    # path('users/me/', ManagerViewSet.as_view({'get': 'me'})),
+
+    path("accounts/login/", TokenObtainPairView.as_view(), name='login'),
+    path("accounts/refresh/", TokenRefreshView.as_view(), name='refresh'),
 
     # path('', include(router.urls)),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

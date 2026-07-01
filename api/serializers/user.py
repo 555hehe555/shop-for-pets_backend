@@ -48,7 +48,7 @@ class UpdateCustomUserSerializer(serializers.ModelSerializer):
 class GetMeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'description', 'email', 'is_staff', 'is_superuser', 'date_joined',
+        fields = ['id', 'username', 'description', 'avatar', 'email', 'is_staff', 'is_superuser', 'date_joined',
                   'last_login',
                   'is_active', 'first_name', 'last_name', 'password']
 

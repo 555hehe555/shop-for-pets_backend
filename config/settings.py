@@ -27,8 +27,9 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = env.bool("ALLOWED_HOSTS", default=[])
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
+AUTH_USER_MODEL = "api.CustomUser"
 
 # Application definition
 
@@ -40,8 +41,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'drf_spectacular',
     'rest_framework',
+
+    'api.apps.ApiConfig'
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -119,3 +127,52 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "WEB4U",
+    "DESCRIPTION": "WEB4U documentation",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SECURITY": [{"ApiKeyAuth": []}],
+    "COMPONENT_SPLIT_REQUEST": True,
+    "AUTHENTICATION_WHITELIST": [],
+    "ENUM_NAME_OVERRIDES": {
+        "ValidationErrorEnum": "drf_standardized_errors.openapi_serializers.ValidationErrorEnum.choices",
+        "ClientErrorEnum": "drf_standardized_errors.openapi_serializers.ClientErrorEnum.choices",
+        "ServerErrorEnum": "drf_standardized_errors.openapi_serializers.ServerErrorEnum.choices",
+        "ErrorCode401Enum": "drf_standardized_errors.openapi_serializers.ErrorCode401Enum.choices",
+        "ErrorCode403Enum": "drf_standardized_errors.openapi_serializers.ErrorCode403Enum.choices",
+        "ErrorCode404Enum": "drf_standardized_errors.openapi_serializers.ErrorCode404Enum.choices",
+        "ErrorCode405Enum": "drf_standardized_errors.openapi_serializers.ErrorCode405Enum.choices",
+        "ErrorCode406Enum": "drf_standardized_errors.openapi_serializers.ErrorCode406Enum.choices",
+        "ErrorCode415Enum": "drf_standardized_errors.openapi_serializers.ErrorCode415Enum.choices",
+        "ErrorCode429Enum": "drf_standardized_errors.openapi_serializers.ErrorCode429Enum.choices",
+        "ErrorCode500Enum": "drf_standardized_errors.openapi_serializers.ErrorCode500Enum.choices",
+    },
+    "POSTPROCESSING_HOOKS": [
+        "drf_standardized_errors.openapi_hooks.postprocess_schema_enums",
+    ],
+    "SWAGGER_UI_SETTINGS": """
+    {
+      deepLinking: true,
+      displayRequestDuration: true,
+      persistAuthorization: true,
+      withCredentials: true,
+      requestInterceptor: (req) => {
+        const method = (req.method || '').toUpperCase();
+
+        if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+          const match = document.cookie.match(/(?:^|;\\s*)csrftoken=([^;]+)/);
+          const token = match ? decodeURIComponent(match[1]) : null;
+
+          if (token) {
+            req.headers['X-CSRFToken'] = token;
+          }
+        }
+
+        return req;
+      }
+    }
+    """,
+}

@@ -21,7 +21,7 @@ from django.shortcuts import redirect
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('user/', include('api.urls')),
+    path('api/', include('api.urls')),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('', lambda request: redirect("swagger-ui")),

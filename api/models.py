@@ -1,9 +1,8 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.conf import settings
-
 import uuid
 from pathlib import Path
+
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
 def product_image_path(instance, filename):
@@ -31,9 +30,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
-        Product,
-        related_name="images",
-        on_delete=models.CASCADE
+        Product, related_name="images", on_delete=models.CASCADE
     )
 
     image = models.ImageField(upload_to=product_image_path)
@@ -46,6 +43,7 @@ class ProductImage(models.Model):
 
     def str(self):
         return self.alt or f"Image #{self.pk}"
+
 
 # class Product(models.Model):
 #     title = models.CharField('заголовок поста', max_length=70)
@@ -81,3 +79,30 @@ class ProductImage(models.Model):
 #     class Meta:
 #         verbose_name = 'Картинка продукту'
 #         verbose_name_plural = 'Картинки для продукту'
+
+
+class Cart(models.Model):
+    product = models.ForeignKey(
+        Product,
+        related_name="carts",
+        on_delete=models.CASCADE,
+    )
+
+    user = models.ForeignKey(
+        CustomUser,
+        related_name="carts",
+        on_delete=models.CASCADE,
+    )
+
+    quantity = models.PositiveIntegerField(default=1)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "product"],
+                name="unique_user_product_cart",
+            )
+        ]

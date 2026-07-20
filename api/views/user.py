@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login as django_login, logout as django_logout
+from django.contrib.auth import authenticate
 
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
@@ -11,8 +11,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from ..models import CustomUser
 
-from documentation import (
-    login_user_list_doc,
+from documentation.login_user import login_user_list_doc
+from documentation.user import (
     user_list_doc,
     user_retrieve_doc,
     user_create_doc,
@@ -28,7 +28,7 @@ from ..serializers.user import (
     CreateCustomUserSerializer,
     UpdateCustomUserSerializer,
     LoginCustomUserSerializer,
-    GetMeSerializer
+    GetMeSerializer,
 )
 
 
@@ -68,9 +68,7 @@ class ManagerViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-@extend_schema_view(
-    login=login_user_list_doc
-)
+@extend_schema_view(login=login_user_list_doc)
 class AuthViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
 
@@ -89,8 +87,9 @@ class AuthViewSet(viewsets.ViewSet):
 
         refresh = RefreshToken.for_user(user)
 
-        return Response({
-            "access": str(refresh.access_token),
-            "refresh": str(refresh),
-        })
-
+        return Response(
+            {
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            }
+        )

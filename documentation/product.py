@@ -1,9 +1,7 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 from rest_framework import status
 
-from api.serializers.product import (
-    ProductSerializer
-)
+from api.serializers.product import ProductSerializer
 
 
 product_list_doc = extend_schema(
@@ -12,7 +10,7 @@ product_list_doc = extend_schema(
     request=None,
     responses={
         status.HTTP_200_OK: ProductSerializer(many=True),
-    }
+    },
 )
 
 product_retrieve_doc = extend_schema(
@@ -33,13 +31,13 @@ product_retrieve_doc = extend_schema(
                         "price": "9.00",
                         "is_available": True,
                         "created_at": "2026-07-13T14:26:08.678137Z",
-                        "updated_at": "2026-07-13T14:26:08.678137Z"
+                        "updated_at": "2026-07-13T14:26:08.678137Z",
                     },
                     response_only=True,
                 )
             ],
         ),
-    }
+    },
 )
 
 product_create_doc = extend_schema(
@@ -60,13 +58,13 @@ product_create_doc = extend_schema(
                         "price": "7037.69",
                         "is_available": True,
                         "created_at": "2026-07-13T14:53:47.484Z",
-                        "updated_at": "2026-07-13T14:53:47.484Z"
+                        "updated_at": "2026-07-13T14:53:47.484Z",
                     },
                     response_only=True,
                 )
             ],
         )
-    }
+    },
 )
 
 
@@ -88,12 +86,13 @@ product_update_doc = extend_schema(
                         "price": "413017",
                         "is_available": True,
                         "created_at": "2026-07-13T14:58:38.037Z",
-                        "updated_at": "2026-07-13T14:58:38.037Z"
+                        "updated_at": "2026-07-13T14:58:38.037Z",
                     },
                     response_only=True,
-            )]
+                )
+            ],
         )
-    }
+    },
 )
 
 
@@ -101,5 +100,5 @@ product_delete_doc = extend_schema(
     tags=["Products"],
     description="Delete product",
     request=None,
-    responses={status.HTTP_204_NO_CONTENT: ProductSerializer(many=True)}
+    responses={status.HTTP_204_NO_CONTENT: ProductSerializer(many=True)},
 )

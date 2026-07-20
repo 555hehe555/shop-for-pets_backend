@@ -1,16 +1,17 @@
-from coreapi.auth import TokenAuthentication
 from rest_framework import viewsets, permissions
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema_view
-from rest_framework.exceptions import AuthenticationFailed
 
-from documentation.product import product_list_doc, product_create_doc, product_retrieve_doc, product_update_doc, product_delete_doc
-from ..models import Product, ProductImage
+from documentation.product import (
+    product_list_doc,
+    product_create_doc,
+    product_retrieve_doc,
+    product_update_doc,
+    product_delete_doc,
+)
+from ..models import Product
 
-from ..permissions import IsOwnerOrAdminDelete
 from ..serializers.product import ProductSerializer
+
 
 @extend_schema_view(
     list=product_list_doc,

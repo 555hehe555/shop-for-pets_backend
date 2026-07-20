@@ -5,15 +5,26 @@ from ..models import CustomUser
 class GetCustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'description', 'email', 'date_joined', 'first_name', 'last_name',
-                  'last_login', 'is_active', 'is_staff', 'is_superuser']
+        fields = [
+            "id",
+            "username",
+            "description",
+            "email",
+            "date_joined",
+            "first_name",
+            "last_name",
+            "last_login",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+        ]
 
 
 class CreateCustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'email']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ["id", "username", "password", "email"]
+        extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
         return CustomUser.objects.create_user(**validated_data)
@@ -22,7 +33,14 @@ class CreateCustomUserSerializer(serializers.ModelSerializer):
 class UpdateCustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["username", 'description', "email", "first_name", "last_name", "password"]
+        fields = [
+            "username",
+            "description",
+            "email",
+            "first_name",
+            "last_name",
+            "password",
+        ]
         extra_kwargs = {
             "username": {"required": True},
             "description": {"required": True},
@@ -48,9 +66,21 @@ class UpdateCustomUserSerializer(serializers.ModelSerializer):
 class GetMeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'description', 'avatar', 'email', 'is_staff', 'is_superuser', 'date_joined',
-                  'last_login',
-                  'is_active', 'first_name', 'last_name', 'password']
+        fields = [
+            "id",
+            "username",
+            "description",
+            "avatar",
+            "email",
+            "is_staff",
+            "is_superuser",
+            "date_joined",
+            "last_login",
+            "is_active",
+            "first_name",
+            "last_name",
+            "password",
+        ]
 
 
 class LoginCustomUserSerializer(serializers.Serializer):

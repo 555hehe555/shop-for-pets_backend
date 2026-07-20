@@ -1,0 +1,950 @@
+openapi: 3.0.3
+info:
+  title: WEB4U
+  version: 1.0.0
+  description: WEB4U documentation
+paths:
+  /api/accounts/login/:
+    post:
+      operationId: api_accounts_login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/accounts/refresh/:
+    post:
+      operationId: api_accounts_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/cart/:
+    get:
+      operationId: api_cart_list
+      description: Returns a list of shopping cart items for the selected product.
+      summary: Get cart items
+      tags:
+      - Carts
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+          description: ''
+    post:
+      operationId: api_cart_create
+      description: Creates a new cart item for the authenticated user.
+      summary: Add product to cart
+      tags:
+      - Carts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CartRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CartRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+        '400':
+          description: Validation error
+  /api/cart/{product_id}:
+    get:
+      operationId: api_cart_retrieve
+      description: Returns detailed information about a specific cart item.
+      summary: Retrieve cart item
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Carts
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+        '404':
+          description: Cart item not found
+    patch:
+      operationId: api_cart_partial_update
+      description: Patch the selected item from the shopping cart.
+      summary: Patch cart item
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Carts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCartPatchRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCartPatchRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCartPatchRequest'
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: Cart item patched
+        '404':
+          description: Cart item not found
+    delete:
+      operationId: api_cart_destroy
+      description: Removes the selected item from the shopping cart.
+      summary: Delete cart item
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Carts
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: Cart item deleted
+        '404':
+          description: Cart item not found
+  /api/products/:
+    get:
+      operationId: api_products_list
+      description: get all products
+      tags:
+      - Products
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+    post:
+      operationId: api_products_create
+      description: create product
+      tags:
+      - Products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              examples:
+                SuccessCreated:
+                  value:
+                    id: 0
+                    title: string
+                    description: string
+                    price: '7037.69'
+                    is_available: true
+                    created_at: '2026-07-13T14:53:47.484Z'
+                    updated_at: '2026-07-13T14:53:47.484Z'
+                  summary: Success created
+          description: Product created successfully.
+  /api/products/{id}:
+    get:
+      operationId: api_products_retrieve
+      description: get info about one product
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Products
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              examples:
+                SuccessResponse:
+                  value:
+                    id: 2
+                    title: sdsdedrfd
+                    description: strsssssssggsrgsedging
+                    price: '9.00'
+                    is_available: true
+                    created_at: '2026-07-13T14:26:08.678137Z'
+                    updated_at: '2026-07-13T14:26:08.678137Z'
+                  summary: Success response
+          description: Product details.
+    put:
+      operationId: api_products_update
+      description: Update product
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              examples:
+                CreatedResponse:
+                  value:
+                    id: 0
+                    title: string
+                    description: string
+                    price: '413017'
+                    is_available: true
+                    created_at: '2026-07-13T14:58:38.037Z'
+                    updated_at: '2026-07-13T14:58:38.037Z'
+                  summary: Created response
+          description: Product updated successfully.
+    patch:
+      operationId: api_products_partial_update
+      description: Update product
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProductRequest'
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              examples:
+                CreatedResponse:
+                  value:
+                    id: 0
+                    title: string
+                    description: string
+                    price: '413017'
+                    is_available: true
+                    created_at: '2026-07-13T14:58:38.037Z'
+                    updated_at: '2026-07-13T14:58:38.037Z'
+                  summary: Created response
+          description: Product updated successfully.
+    delete:
+      operationId: api_products_destroy
+      description: Delete product
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Products
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+  /api/users/:
+    get:
+      operationId: api_users_list
+      description: Get paginated list of users.
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetCustomUser'
+          description: ''
+    post:
+      operationId: api_users_create
+      description: Create user.
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateCustomUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateCustomUserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCustomUser'
+              examples:
+                CreatedResponse:
+                  value:
+                    id: 5
+                    username: new_user
+                    email: new_user@example.com
+                  summary: Created response
+          description: User created successfully.
+  /api/users/{id}/:
+    get:
+      operationId: api_users_retrieve
+      description: Get user details by id.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCustomUser'
+              examples:
+                SuccessResponse:
+                  value:
+                    id: 4
+                    username: admin
+                    description: Admin user details.
+                    avatar: example.com/.../avatar.png
+                    email: admin@example.com
+                    date_joined: '2026-04-14T12:00:00Z'
+                    first_name: Admin
+                    last_name: User
+                    last_login: '2026-04-14T13:00:00Z'
+                    is_active: true
+                    is_staff: true
+                    is_superuser: true
+                  summary: Success response
+          description: User details.
+    put:
+      operationId: api_users_update
+      description: Fully update user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomUserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCustomUser'
+              examples:
+                UpdatedResponse:
+                  value:
+                    username: updated_user
+                    description: Updated user.
+                    avatar: example.com/.../new_avatar.png
+                    email: updated@example.com
+                    first_name: Updated
+                    last_name: User
+                  summary: Updated response
+          description: User updated successfully.
+    patch:
+      operationId: api_users_partial_update
+      description: Partially update user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCustomUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCustomUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCustomUserRequest'
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCustomUser'
+              examples:
+                PatchedResponse:
+                  value:
+                    username: patched_user
+                    description: Updated user.
+                    avatar: example.com/.../new_avatar.png
+                    email: patched@example.com
+                    first_name: Patched
+                    last_name: User
+                  summary: Patched response
+          description: User partially updated successfully.
+    delete:
+      operationId: api_users_destroy
+      description: Delete user.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: User deleted successfully.
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        product:
+          type: integer
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - product
+      - updated_at
+    CartRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - product
+    CreateCustomUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+      required:
+      - id
+      - username
+    CreateCustomUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 128
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+      required:
+      - password
+      - username
+    GetCustomUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        description:
+          type: string
+          nullable: true
+          title: Опис користувача
+          maxLength: 500
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        date_joined:
+          type: string
+          format: date-time
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_staff:
+          type: boolean
+          title: Staff status
+          description: Designates whether the user can log into this admin site.
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly
+            assigning them.
+      required:
+      - id
+      - username
+    PatchedCartPatchRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+    PatchedProductRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 70
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        is_available:
+          type: boolean
+    PatchedUpdateCustomUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        description:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Опис користувача
+          maxLength: 500
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 128
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 70
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        is_available:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - price
+      - title
+      - updated_at
+    ProductRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 70
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        is_available:
+          type: boolean
+      required:
+      - price
+      - title
+    TokenObtainPair:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
+    TokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    UpdateCustomUser:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        description:
+          type: string
+          nullable: true
+          title: Опис користувача
+          maxLength: 500
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - description
+      - email
+      - first_name
+      - last_name
+      - username
+    UpdateCustomUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        description:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Опис користувача
+          maxLength: 500
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 128
+      required:
+      - description
+      - email
+      - first_name
+      - last_name
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

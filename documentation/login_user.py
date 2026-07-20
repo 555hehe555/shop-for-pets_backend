@@ -1,4 +1,9 @@
-from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample, inline_serializer
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiResponse,
+    OpenApiExample,
+    inline_serializer,
+)
 from rest_framework import serializers, status
 
 from api.serializers.user import LoginCustomUserSerializer

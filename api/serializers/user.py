@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from ..models import CustomUser
 
 
@@ -69,17 +70,13 @@ class GetMeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "username",
-            "description",
-            "avatar",
             "email",
             "is_staff",
-            "is_superuser",
             "date_joined",
             "last_login",
             "is_active",
             "first_name",
             "last_name",
-            "password",
         ]
 
 

@@ -1,34 +1,31 @@
 from django.contrib.auth import authenticate
-
-from rest_framework import viewsets, permissions
+from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema_view
 from rest_framework.exceptions import AuthenticationFailed
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from ..models import CustomUser
 
 from documentation.login_user import login_user_list_doc
 from documentation.user import (
-    user_list_doc,
-    user_retrieve_doc,
-    user_create_doc,
-    user_update_doc,
-    user_patch_doc,
-    user_delete_doc,
     get_me_doc,
+    user_create_doc,
+    user_delete_doc,
+    user_list_doc,
+    user_patch_doc,
+    user_retrieve_doc,
+    user_update_doc,
 )
 
+from ..models import CustomUser
 from ..permissions import IsOwnerOrAdminDelete
 from ..serializers.user import (
-    GetCustomUserSerializer,
     CreateCustomUserSerializer,
-    UpdateCustomUserSerializer,
-    LoginCustomUserSerializer,
+    GetCustomUserSerializer,
     GetMeSerializer,
+    LoginCustomUserSerializer,
+    UpdateCustomUserSerializer,
 )
 
 
@@ -58,12 +55,14 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         return GetCustomUserSerializer
 
 
-@extend_schema_view(me=get_me_doc)
-class ManagerViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+@extend_schema_view(get=get_me_doc)
+class MeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-    @action(methods=["get"], detail=False, url_path="me")
-    def me(self, request):
+    @extend_schema(
+        responses=GetMeSerializer,
+    )
+    def get(self, request):
         serializer = GetMeSerializer(request.user)
         return Response(serializer.data)
 

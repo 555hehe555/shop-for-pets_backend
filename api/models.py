@@ -7,7 +7,7 @@ from django.db import models
 
 def product_image_path(instance, filename):
     ext = Path(filename).suffix
-    return f"products/{instance.product.id}/{uuid.uuid4()}{ext}"
+    return f"images/products/{instance.product.id}/{uuid.uuid4()}{ext}"
 
 
 class CustomUser(AbstractUser):
@@ -24,7 +24,10 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def str(self):
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
         return self.title
 
 
@@ -39,9 +42,10 @@ class ProductImage(models.Model):
 
     is_main = models.BooleanField(default=False)
 
-    order = models.PositiveIntegerField(default=0)
+    class Meta:
+        ordering = ["id"]
 
-    def str(self):
+    def __str__(self):
         return self.alt or f"Image #{self.pk}"
 
 

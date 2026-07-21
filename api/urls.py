@@ -10,7 +10,7 @@ from rest_framework_simplejwt.views import (
 
 from .views.cart import CartViewSet
 from .views.product import ProductViewSet
-from .views.user import CustomUserViewSet
+from .views.user import CustomUserViewSet, MeView
 
 # router = DefaultRouter()
 # router.register(r'', ManagerViewSet, basename='manager')
@@ -29,6 +29,7 @@ urlpatterns = [
         ),
     ),
     # path('users/me/', ManagerViewSet.as_view({'get': 'me'})),
+    path("users/me/", MeView.as_view()),
     path("accounts/login/", TokenObtainPairView.as_view(), name="login"),
     path("accounts/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("products/", ProductViewSet.as_view({"get": "list", "post": "create"})),
@@ -42,6 +43,14 @@ urlpatterns = [
                 "patch": "partial_update",
             }
         ),
+    ),
+    path(
+        "products/<int:pk>/images/",
+        ProductViewSet.as_view({"post": "add_image"}),
+    ),
+    path(
+        "products/<int:pk>/images/<int:image_id>/",
+        ProductViewSet.as_view({"delete": "delete_image", "patch": "update_image"}),
     ),
     path("cart/", CartViewSet.as_view({"get": "list", "post": "create"})),
     path(

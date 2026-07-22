@@ -13,11 +13,12 @@ from documentation.product import (
 )
 from documentation.product_image import (
     product_image_create_doc,
-    product_image_partical_update_doc,
     product_image_delete_doc,
+    product_image_partical_update_doc,
 )
 
 from ..models import Product, ProductImage
+from ..permissions import *
 from ..serializers.product import ProductImageSerializer, ProductSerializer
 
 
@@ -48,9 +49,24 @@ class ProductViewSet(viewsets.ModelViewSet):
         )
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve", "create", "post_list"]:
-            return [permissions.AllowAny()]
-        return [permissions.IsAdminUser()]
+        if self.action in ("list", "retrieve"):
+            permission_classes = [permissions.AllowAny]
+
+        elif self.action in (
+            "create",
+            "destroy",
+            "update",
+            "partial_update",
+            "add_image",
+            "delete_image",
+            "update_image",
+        ):
+            permission_classes = [permissions.IsAdminUser]
+
+        else:
+            permission_classes = [IsSuperUser]
+
+        return [permission() for permission in permission_classes]
 
     @extend_schema(
         request=ProductImageSerializer,

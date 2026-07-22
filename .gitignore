@@ -221,3 +221,5 @@ __marimo__/
 
 media/images/*
 !media/images/.gitkeep
+
+.idea

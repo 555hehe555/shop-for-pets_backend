@@ -19,7 +19,7 @@ from documentation.user import (
 )
 
 from ..models import CustomUser
-from ..permissions import IsOwnerOrAdminDelete
+from ..permissions import *
 from ..serializers.user import (
     CreateCustomUserSerializer,
     GetCustomUserSerializer,
@@ -43,9 +43,25 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all().order_by("-date_joined", "-id")
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve", "create", "post_list"]:
-            return [permissions.AllowAny()]
-        return [IsOwnerOrAdminDelete()]
+        if self.action == "list":
+            permission_classes = [IsSuperUser]
+
+        elif self.action == "retrieve":
+            permission_classes = [permissions.IsAdminUser]
+
+        elif self.action == "create":
+            permission_classes = [permissions.AllowAny]
+
+        elif self.action == "destroy":
+            permission_classes = [IsOwnerOrSuperUser]
+
+        elif self.action in ("update", "partial_update"):
+            permission_classes = [IsOwnerOrReadOnly]
+
+        else:
+            permission_classes = [IsSuperUser]
+
+        return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
         if self.action == "create":

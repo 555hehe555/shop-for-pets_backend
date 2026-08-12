@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -16,7 +16,6 @@ from documentation.product_image import (
     product_image_delete_doc,
     product_image_partical_update_doc,
 )
-
 from ..models import Product, ProductImage
 from ..permissions import *
 from ..serializers.product import ProductImageSerializer, ProductSerializer
@@ -40,6 +39,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         "-created_at",
         "-id",
     )
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["title", "description"]
+
 
     def get_image(self, product, image_id):
         return get_object_or_404(

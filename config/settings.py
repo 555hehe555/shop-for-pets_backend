@@ -60,7 +60,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "SECURITY": [{"BearerAuth": []}],
     "COMPONENTS": {
@@ -156,8 +156,8 @@ MEDIA_ROOT = "media"
 
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "WEB4U",
-    "DESCRIPTION": "WEB4U documentation",
+    "TITLE": "shop for pets",
+    "DESCRIPTION": "SfP documentation",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SECURITY": [{"jwtAuth": []}],

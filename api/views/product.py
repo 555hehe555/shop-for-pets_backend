@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
@@ -40,8 +41,13 @@ class ProductViewSet(viewsets.ModelViewSet):
         "-id",
     )
 
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ["title", "description"]
+    filterset_fields = {
+        "species__name": ["exact", "in"],
+        "category__name": ["exact", "in"],
+        "brand__name": ["exact", "in"],
+    }
 
 
     def get_image(self, product, image_id):

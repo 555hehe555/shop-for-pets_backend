@@ -7,12 +7,33 @@ from .models import (
     CustomUser,
     Product,
     ProductImage,
+    Species,
+    Category,
+    Brand,
 )
 
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 1
+
+
+@admin.register(Species)
+class SpeciesAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
+    search_fields = ["name"]
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
+    search_fields = ["name"]
+
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
+    search_fields = ["name"]
 
 
 @admin.register(Product)
@@ -22,10 +43,20 @@ class ProductAdmin(admin.ModelAdmin):
         "title",
         "price",
         "is_available",
+
+        "species",
+        "category",
+        "brand",
+
         "created_at",
     )
     list_filter = (
         "is_available",
+
+        "species",
+        "category",
+        "brand",
+
         "created_at",
     )
     search_fields = (

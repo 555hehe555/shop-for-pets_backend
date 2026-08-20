@@ -30,11 +30,9 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(",")
-print(env("ALLOWED_HOSTS"))
 
 AUTH_USER_MODEL = "api.CustomUser"
 
-print(env("CORS_ALLOWED_ORIGINS"))
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS").split(",")
 
 # Application definition
@@ -49,6 +47,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "rest_framework",
     "corsheaders",
+    'django_filters',
     "api.apps.ApiConfig",
 ]
 

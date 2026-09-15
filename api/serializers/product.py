@@ -13,6 +13,29 @@ class ProductImageSerializer(serializers.ModelSerializer):
             "is_main",
         ]
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        
+        request = self.context.get('request')
+        view = self.context.get('view')
+        
+        file_field = instance.image
+        if view and hasattr(view, 'action'):
+            if view.action == 'list':
+                file_field = instance.image_thumbnail or instance.image
+            elif view.action in ['retrieve', 'update', 'partial_update']:
+                file_field = instance.image_medium or instance.image
+                
+        if file_field:
+            url = file_field.url
+            if request is not None:
+                url = request.build_absolute_uri(url)
+            data['image'] = url
+        else:
+            data['image'] = None
+            
+        return data
+
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)

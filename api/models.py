@@ -57,12 +57,19 @@ class Product(models.Model):
         return self.title
 
 
+from io import BytesIO
+from PIL import Image
+from django.core.files.base import ContentFile
+import os
+
 class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, related_name="images", on_delete=models.CASCADE
     )
 
     image = models.ImageField(upload_to=product_image_path)
+    image_medium = models.ImageField(upload_to=product_image_path, blank=True, null=True)
+    image_thumbnail = models.ImageField(upload_to=product_image_path, blank=True, null=True)
 
     alt = models.CharField(max_length=255, blank=True)
 
@@ -73,6 +80,59 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return self.alt or f"Image #{self.pk}"
+
+    def generate_thumbnails(self):
+        if not self.image:
+            return
+            
+        self.image.file.seek(0)
+        img = Image.open(self.image.file)
+        img_format = img.format if img.format else 'JPEG'
+        
+        if img_format == 'JPEG' and img.mode in ('RGBA', 'P'):
+            img = img.convert('RGB')
+            
+        name, ext = os.path.splitext(self.image.name)
+        
+        img_medium = img.copy()
+        img_medium.thumbnail((1200, 1200), Image.Resampling.LANCZOS)
+        medium_io = BytesIO()
+        img_medium.save(medium_io, format=img_format)
+        self.image_medium.save(f"{name}_medium{ext}", ContentFile(medium_io.getvalue()), save=False)
+
+        img_thumb = img.copy()
+        img_thumb.thumbnail((300, 300), Image.Resampling.LANCZOS)
+        thumb_io = BytesIO()
+        img_thumb.save(thumb_io, format=img_format)
+        self.image_thumbnail.save(f"{name}_thumb{ext}", ContentFile(thumb_io.getvalue()), save=False)
+        
+        self.image.file.seek(0)
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        old_instance = ProductImage.objects.filter(pk=self.pk).first() if not is_new else None
+
+        if not is_new and old_instance and old_instance.image != self.image:
+            if old_instance.image:
+                old_instance.image.delete(save=False)
+            if old_instance.image_medium:
+                old_instance.image_medium.delete(save=False)
+            if old_instance.image_thumbnail:
+                old_instance.image_thumbnail.delete(save=False)
+
+        if (is_new and self.image) or (old_instance and old_instance.image != self.image):
+            self.generate_thumbnails()
+            
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.image:
+            self.image.delete(save=False)
+        if self.image_medium:
+            self.image_medium.delete(save=False)
+        if self.image_thumbnail:
+            self.image_thumbnail.delete(save=False)
+        super().delete(*args, **kwargs)
 
 
 # class Product(models.Model):

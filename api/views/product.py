@@ -3,6 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets, filters
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from documentation.product import (
@@ -22,6 +23,11 @@ from ..permissions import *
 from ..serializers.product import ProductImageSerializer, ProductSerializer
 
 
+class ProductPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 100
+
 @extend_schema_view(
     list=product_list_doc,
     retrieve=product_retrieve_doc,
@@ -36,6 +42,7 @@ from ..serializers.product import ProductImageSerializer, ProductSerializer
 class ProductViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "delete", "put", "patch"]
     serializer_class = ProductSerializer
+    pagination_class = ProductPagination
     queryset = Product.objects.prefetch_related("images").order_by(
         "-created_at",
         "-id",

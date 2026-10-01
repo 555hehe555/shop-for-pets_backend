@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'django_filters',
     "api.apps.ApiConfig",
+    "phonenumber_field",
 ]
 
 REST_FRAMEWORK = {
@@ -144,6 +145,9 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+
+PHONENUMBER_DEFAULT_REGION = "UA"
+
 
 
 # Static files (CSS, JavaScript, Images)

@@ -1,19 +1,33 @@
+import os
 import uuid
+from io import BytesIO
 from pathlib import Path
 
+from PIL import Image
 from django.contrib.auth.models import AbstractUser
+from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 def product_image_path(instance, filename):
     ext = Path(filename).suffix
     return f"images/products/{instance.product.id}/{uuid.uuid4()}{ext}"
 
+def user_avatar_path(instance, filename):
+    ext = filename.split('.')[-1]
+    return f"images/users_media/avatars/user_{instance.id}/{uuid.uuid4()}.{ext}"
+
 
 class CustomUser(AbstractUser):
     email = models.EmailField("email", blank=True, max_length=254)
-    description = models.TextField("опис користувача", null=True, max_length=500)
+    phone_number = PhoneNumberField(
+        unique=True,
+        null=True,
+        blank=True
+    )
+    avatar = models.ImageField(upload_to=user_avatar_path, null=True, blank=True)
 
 
 class Species(models.Model):
@@ -58,10 +72,14 @@ class Product(models.Model):
         return self.title
 
 
-from io import BytesIO
-from PIL import Image
-from django.core.files.base import ContentFile
-import os
+class Pet(models.Model):
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    species = models.ForeignKey(Species, on_delete=models.CASCADE)
+    birthday = models.DateField(null=True, blank=True)
+
+    favourite_products = models.ManyToManyField(Product, blank=True, related_name="favourite_products")
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -140,7 +158,7 @@ class ProductImage(models.Model):
 #     title = models.CharField('заголовок поста', max_length=70)
 #     description = models.TextField("текст поста", max_length=500)
 #     price = models.IntegerField(verbose_name="ціна")
-#     img = models.ImageField("зображеня", upload_to="image/products_imgs/", blank=True)
+#     img = models.ImageField("зображення", upload_to="image/products_imgs/", blank=True)
 #     is_available = models.BooleanField(verbose_name="в наявності", default=True)
 #
 #     def __str__(self):

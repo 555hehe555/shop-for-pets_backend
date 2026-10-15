@@ -21,13 +21,14 @@ def user_avatar_path(instance, filename):
 
 
 class CustomUser(AbstractUser):
+    full_name = models.CharField(max_length=150, blank=True)
     email = models.EmailField("email", blank=True, max_length=254)
     phone_number = PhoneNumberField(
         unique=True,
         null=True,
         blank=True
     )
-    avatar = models.ImageField(upload_to=user_avatar_path, null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
 
 
 class Species(models.Model):

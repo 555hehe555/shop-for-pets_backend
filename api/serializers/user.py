@@ -9,7 +9,6 @@ class GetCustomUserSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "username",
-            "description",
             "email",
             "date_joined",
             "first_name",
@@ -18,6 +17,10 @@ class GetCustomUserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
             "is_superuser",
+
+            "full_name",
+            "phone_number",
+            "date_of_birth",
         ]
 
 
@@ -35,30 +38,21 @@ class UpdateCustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            "username",
-            "description",
+            "full_name",
             "email",
-            "first_name",
-            "last_name",
-            "password",
+            "phone_number",
+            "date_of_birth",
         ]
         extra_kwargs = {
-            "username": {"required": True},
-            "description": {"required": True},
-            "email": {"required": True},
-            "first_name": {"required": True},
-            "last_name": {"required": True},
-            "password": {"write_only": True, "required": False},
+            "full_name": {"write_only": True},
+            "email": {"write_only": True},
+            "phone_number": {"write_only": True},
+            "date_of_birth": {"write_only": True},
         }
 
     def update(self, instance, validated_data):
-        password = validated_data.pop("password", None)
-
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-
-        if password:
-            instance.set_password(password)
 
         instance.save()
         return instance
@@ -69,14 +63,10 @@ class GetMeSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             "id",
-            "username",
+            "full_name",
             "email",
-            "is_staff",
-            "date_joined",
-            "last_login",
-            "is_active",
-            "first_name",
-            "last_name",
+            "phone_number",
+            "date_of_birth",
         ]
 
 

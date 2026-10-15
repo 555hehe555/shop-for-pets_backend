@@ -29,18 +29,19 @@ user_retrieve_doc = extend_schema(
                 OpenApiExample(
                     name="Success response",
                     value={
-                        "id": 4,
-                        "username": "admin",
-                        "description": "Admin user details.",
-                        "avatar": "example.com/.../avatar.png",
-                        "email": "admin@example.com",
+                        "id": 1,
+                        "username": "john_doe",
+                        "first_name": "John",
+                        "last_name": "Doe",
+                        "full_name": "John Doe",
+                        "email": "john.doe@example.com",
+                        "phone_number": "+380501234567",
+                        "date_of_birth": "1995-05-15",
                         "date_joined": "2026-04-14T12:00:00Z",
-                        "first_name": "Admin",
-                        "last_name": "User",
                         "last_login": "2026-04-14T13:00:00Z",
                         "is_active": True,
-                        "is_staff": True,
-                        "is_superuser": True,
+                        "is_staff": False,
+                        "is_superuser": False,
                     },
                     response_only=True,
                 )
@@ -51,7 +52,7 @@ user_retrieve_doc = extend_schema(
 
 user_create_doc = extend_schema(
     tags=["Users"],
-    description="Create user.",
+    description="Create a new user.",
     request=CreateCustomUserSerializer,
     responses={
         status.HTTP_201_CREATED: OpenApiResponse(
@@ -61,9 +62,9 @@ user_create_doc = extend_schema(
                 OpenApiExample(
                     name="Created response",
                     value={
-                        "id": 5,
-                        "username": "new_user",
-                        "email": "new_user@example.com",
+                        "id": 1,
+                        "username": "john_doe",
+                        "email": "john.doe@example.com",
                     },
                     response_only=True,
                 )
@@ -74,22 +75,29 @@ user_create_doc = extend_schema(
 
 user_update_doc = extend_schema(
     tags=["Users"],
-    description="Fully update user.",
+    description="Fully update user profile.",
     request=UpdateCustomUserSerializer,
     responses={
         status.HTTP_200_OK: OpenApiResponse(
-            response=UpdateCustomUserSerializer,
+            response=GetCustomUserSerializer,
             description="User updated successfully.",
             examples=[
                 OpenApiExample(
                     name="Updated response",
                     value={
-                        "username": "updated_user",
-                        "description": "Updated user.",
-                        "avatar": "example.com/.../new_avatar.png",
-                        "email": "updated@example.com",
-                        "first_name": "Updated",
-                        "last_name": "User",
+                        "id": 1,
+                        "username": "john_doe",
+                        "first_name": "John",
+                        "last_name": "Doe",
+                        "full_name": "John Doe",
+                        "email": "john.doe@example.com",
+                        "phone_number": "+380501234567",
+                        "date_of_birth": "1995-05-15",
+                        "date_joined": "2026-04-14T12:00:00Z",
+                        "last_login": "2026-04-14T13:00:00Z",
+                        "is_active": True,
+                        "is_staff": False,
+                        "is_superuser": False,
                     },
                     response_only=True,
                 )
@@ -100,22 +108,29 @@ user_update_doc = extend_schema(
 
 user_patch_doc = extend_schema(
     tags=["Users"],
-    description="Partially update user.",
+    description="Partially update user profile.",
     request=UpdateCustomUserSerializer,
     responses={
         status.HTTP_200_OK: OpenApiResponse(
-            response=UpdateCustomUserSerializer,
+            response=GetCustomUserSerializer,
             description="User partially updated successfully.",
             examples=[
                 OpenApiExample(
                     name="Patched response",
                     value={
-                        "username": "patched_user",
-                        "description": "Updated user.",
-                        "avatar": "example.com/.../new_avatar.png",
-                        "email": "patched@example.com",
-                        "first_name": "Patched",
-                        "last_name": "User",
+                        "id": 1,
+                        "username": "john_doe",
+                        "first_name": "John",
+                        "last_name": "Doe",
+                        "full_name": "John Doe",
+                        "email": "john.doe@example.com",
+                        "phone_number": "+380501234567",
+                        "date_of_birth": "1995-05-15",
+                        "date_joined": "2026-04-14T12:00:00Z",
+                        "last_login": "2026-04-14T13:00:00Z",
+                        "is_active": True,
+                        "is_staff": False,
+                        "is_superuser": False,
                     },
                     response_only=True,
                 )
@@ -144,6 +159,19 @@ get_me_doc = extend_schema(
         status.HTTP_200_OK: OpenApiResponse(
             response=GetMeSerializer,
             description="Current user details.",
+            examples=[
+                OpenApiExample(
+                    name="Current user response",
+                    value={
+                        "id": 1,
+                        "full_name": "John Doe",
+                        "email": "john.doe@example.com",
+                        "phone_number": "+380501234567",
+                        "date_of_birth": "1995-05-15",
+                    },
+                    response_only=True,
+                )
+            ],
         ),
     },
 )

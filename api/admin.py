@@ -3,13 +3,14 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 
 from .models import (
+    Brand,
     Cart,
+    Category,
     CustomUser,
+    Pet,
     Product,
     ProductImage,
     Species,
-    Category,
-    Brand,
 )
 
 
@@ -90,6 +91,26 @@ class ProductImageAdmin(admin.ModelAdmin):
         return "-"
 
 
+@admin.register(Pet)
+class PetAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "owner",
+        "species",
+        "birthday",
+    )
+    list_filter = (
+        "species",
+    )
+    search_fields = (
+        "name",
+        "owner__username",
+        "owner__email",
+    )
+    filter_horizontal = ("favourite_products",)
+
+
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     list_display = (
@@ -111,19 +132,41 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         (
             "Additional info",
-            {"fields": ("description",)},
+            {
+                "fields": (
+                    "full_name",
+                    "phone_number",
+                    "date_of_birth",
+                )
+            },
+        ),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (
+            "Additional info",
+            {
+                "fields": (
+                    "full_name",
+                    "phone_number",
+                    "date_of_birth",
+                )
+            },
         ),
     )
 
     list_display = (
         "id",
         "username",
+        "full_name",
         "email",
+        "phone_number",
         "is_staff",
         "is_superuser",
     )
 
     search_fields = (
         "username",
+        "full_name",
         "email",
+        "phone_number",
     )

@@ -1,6 +1,5 @@
 from django.shortcuts import redirect
 from django.urls import path
-
 # from rest_framework.routers import DefaultRouter
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import (
@@ -9,6 +8,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from .views.cart import CartViewSet
+from .views.pet import PetViewSet
 from .views.product import ProductViewSet
 from .views.user import CustomUserViewSet, MeView
 
@@ -32,6 +32,27 @@ urlpatterns = [
     path("users/me/", MeView.as_view()),
     path("accounts/login/", TokenObtainPairView.as_view(), name="login"),
     path("accounts/refresh/", TokenRefreshView.as_view(), name="refresh"),
+
+    path(
+        "pets/",
+        PetViewSet.as_view({
+            "get": "list",
+            "post": "create",
+        }),
+        name="pets",
+    ),
+    path(
+        "pets/<int:pk>/",
+        PetViewSet.as_view({
+            "get": "retrieve",
+            "put": "update",
+            "patch": "partial_update",
+            "delete": "destroy",
+        }),
+        name="pet-detail",
+    ),
+
+
     path("products/", ProductViewSet.as_view({"get": "list", "post": "create"})),
     path(
         "products/<int:pk>",

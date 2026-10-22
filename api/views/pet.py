@@ -1,18 +1,27 @@
+from drf_spectacular.utils import extend_schema_view
 from rest_framework import permissions, viewsets
 
+from documentation.pet import (
+    pet_create_doc,
+    pet_delete_doc,
+    pet_list_doc,
+    pet_patch_doc,
+    pet_retrieve_doc,
+    pet_update_doc,
+)
 from ..models import Pet
 from ..permissions import IsOwnerOrSuperUser
 from ..serializers.pet import PetSerializer
 
 
-# @extend_schema_view(
-#     list=product_list_doc,
-#     retrieve=product_retrieve_doc,
-#     create=product_create_doc,
-#     destroy=product_delete_doc,
-#     update=product_update_doc,
-#     partial_update=product_update_doc,
-# )
+@extend_schema_view(
+    list=pet_list_doc,
+    retrieve=pet_retrieve_doc,
+    create=pet_create_doc,
+    destroy=pet_delete_doc,
+    update=pet_update_doc,
+    partial_update=pet_patch_doc,
+)
 class PetViewSet(viewsets.ModelViewSet):
     serializer_class = PetSerializer
     permission_classes = [permissions.IsAuthenticated]

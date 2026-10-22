@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from .views.cart import CartViewSet
+from .views.filter import SpeciesViewSet, CategoryViewSet, BrandViewSet
 from .views.pet import PetViewSet
 from .views.product import ProductViewSet
 from .views.user import CustomUserViewSet, MeView
@@ -87,5 +88,18 @@ urlpatterns = [
         route="v1/docs/",
         view=SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
+    ),
+
+    path(
+        "species/",
+        SpeciesViewSet.as_view({"get": "list"}),
+    ),
+    path(
+        "categories/",
+        CategoryViewSet.as_view({"get": "list"}),
+    ),
+    path(
+        "brands/",
+        BrandViewSet.as_view({"get": "list"}),
     ),
 ]

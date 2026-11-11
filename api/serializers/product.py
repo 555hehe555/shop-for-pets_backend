@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Product, ProductImage, Species
+from ..models import Product, ProductImage, Species, Category, Brand
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -41,8 +41,8 @@ class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
 
     species = serializers.SlugRelatedField(slug_field="name", queryset=Species.objects.all(), required=False, allow_null=True)
-    category = serializers.SlugRelatedField(slug_field="name", queryset=Species.objects.all(), required=False, allow_null=True)
-    brand = serializers.SlugRelatedField(slug_field="name", queryset=Species.objects.all(), required=False, allow_null=True)
+    category = serializers.SlugRelatedField(slug_field="name", queryset=Category.objects.all(), required=False, allow_null=True)
+    brand = serializers.SlugRelatedField(slug_field="name", queryset=Brand.objects.all(), required=False, allow_null=True)
 
     class Meta:
         model = Product

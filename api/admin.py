@@ -7,6 +7,7 @@ from .models import (
     Cart,
     Category,
     CustomUser,
+    FavouriteProduct,
     Pet,
     Product,
     ProductImage,
@@ -108,7 +109,6 @@ class PetAdmin(admin.ModelAdmin):
         "owner__username",
         "owner__email",
     )
-    filter_horizontal = ("favourite_products",)
 
 
 @admin.register(Cart)
@@ -118,6 +118,21 @@ class CartAdmin(admin.ModelAdmin):
         "user",
         "product",
         "quantity",
+        "created_at",
+    )
+    list_filter = ("created_at",)
+    search_fields = (
+        "user__username",
+        "product__title",
+    )
+
+
+@admin.register(FavouriteProduct)
+class FavouriteProductAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "product",
         "created_at",
     )
     list_filter = ("created_at",)

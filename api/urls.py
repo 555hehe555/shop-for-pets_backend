@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from .views.cart import CartViewSet
+from .views.favourite_product import FavouriteProductViewSet
 from .views.filter import SpeciesViewSet, CategoryViewSet, BrandViewSet
 from .views.pet import PetViewSet
 from .views.product import ProductViewSet
@@ -79,6 +80,13 @@ urlpatterns = [
         "cart/<int:product_id>",
         CartViewSet.as_view(
             {"get": "retrieve", "delete": "destroy", "patch": "partial_update"}
+        ),
+    ),
+    path("favourites/", FavouriteProductViewSet.as_view({"get": "list", "post": "create"})),
+    path(
+        "favourites/<int:product_id>",
+        FavouriteProductViewSet.as_view(
+            {"get": "retrieve", "delete": "destroy"}
         ),
     ),
     # path('', include(router.urls)),

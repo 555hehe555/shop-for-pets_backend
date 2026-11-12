@@ -31,6 +31,9 @@ class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
 
 
+
+
+
 class Species(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -78,9 +81,6 @@ class Pet(models.Model):
     name = models.CharField(max_length=100)
     species = models.ForeignKey(Species, on_delete=models.CASCADE)
     birthday = models.DateField(null=True, blank=True)
-
-    favourite_products = models.ManyToManyField(Product, blank=True, related_name="favourite_products")
-
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
@@ -216,3 +216,30 @@ class Cart(models.Model):
                 name="unique_user_product_cart",
             )
         ]
+
+
+class FavouriteProduct(models.Model):
+    product = models.ForeignKey(
+        Product,
+        related_name="favourited_by",
+        on_delete=models.CASCADE,
+    )
+
+    user = models.ForeignKey(
+        CustomUser,
+        related_name="favourite_products",
+        on_delete=models.CASCADE,
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "product"],
+                name="unique_user_product_favourite",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user} — {self.product}"

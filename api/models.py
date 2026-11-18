@@ -60,9 +60,9 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(max_digits=10, decimal_places=2)
-    channel3_id = models.CharField(default="UAH", max_length=3)
+    currency = models.CharField(max_length=3, default="UAH")
     is_available = models.BooleanField(default=True)
-    currency = models.CharField(blank=True, max_length=40, null=True, unique=True)
+    channel3_id = models.CharField(max_length=40, unique=True, null=True, blank=True)
 
     species = models.ForeignKey(Species, on_delete=models.SET_NULL, null=True, related_name="products")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="products")

@@ -155,42 +155,6 @@ class ProductImage(models.Model):
         super().delete(*args, **kwargs)
 
 
-# class Product(models.Model):
-#     title = models.CharField('заголовок поста', max_length=70)
-#     description = models.TextField("текст поста", max_length=500)
-#     price = models.IntegerField(verbose_name="ціна")
-#     img = models.ImageField("зображення", upload_to="image/products_imgs/", blank=True)
-#     is_available = models.BooleanField(verbose_name="в наявності", default=True)
-#
-#     def __str__(self):
-#         return f'{self.title}'
-#
-#     class Meta:
-#         verbose_name = 'Продукт'
-#         verbose_name_plural = 'Продукти'
-#
-#
-# class ProductImage(models.Model):
-#     product = models.ForeignKey(
-#         Product,
-#         on_delete=models.CASCADE,
-#         related_name="images"
-#     )
-#
-#     alt = models.CharField(max_length=255)
-#     is_main = models.BooleanField(default=False)
-#     order = models.PositiveIntegerField(default=1)
-#
-#     image = models.ImageField(upload_to=f"image/products_imgs/{alt}/{order}")
-#
-#     def __str__(self):
-#         return f'{self.alt}'
-#
-#     class Meta:
-#         verbose_name = 'Картинка продукту'
-#         verbose_name_plural = 'Картинки для продукту'
-
-
 class Cart(models.Model):
     product = models.ForeignKey(
         Product,

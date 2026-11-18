@@ -1,8 +1,15 @@
 import json
+from pathlib import Path
 
+import environ
 from channel3_sdk import Channel3
 
-client = Channel3(api_key="Ad2wTEqcMb3OruRT4uWu37lsmPdClV2Q3qcSnwnD")
+BASE_DIR = Path(__file__).resolve().parent
+
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / ".env")
+
+client = Channel3(api_key=f"{env("SECRET_KEY")}")
 
 SEARCH_QUERIES = [
     # Food

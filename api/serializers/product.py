@@ -52,7 +52,9 @@ class ProductSerializer(serializers.ModelSerializer):
             "description",
             "price",
             "discount",
+            "currency",
             "is_available",
+            "channel3_id",
 
             "species",
             "category",
@@ -60,4 +62,4 @@ class ProductSerializer(serializers.ModelSerializer):
 
             "images",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = ("id", "created_at", "updated_at", "channel3_id")
